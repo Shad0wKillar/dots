@@ -1,0 +1,120 @@
+{
+  "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+  "blocks": [
+    {
+      "alignment": "left",
+      "newline": true,
+      "segments": [
+        {
+          "background": "blue",
+          "foreground": "black",
+          "options": {
+            "arch": "\uf303",
+            "linux": "\ue712"
+          },
+          "style": "diamond",
+          "leading_diamond": "\u256d\u2500\ue0b2",
+          "template": " <b>{{ .Icon }}</b> ",
+          "type": "os"
+        },
+        {
+          "background": "black",
+          "foreground": "white",
+          "style": "powerline",
+          "powerline_symbol": "\ue0b0",
+          "template": " <b>{{ .UserName }}</b> ",
+          "type": "session"
+        },
+        {
+          "background": "cyan",
+          "foreground": "black",
+          "options": {
+            "style": "agnoster_short",
+            "max_depth": 3,
+            "folder_icon": "\u2026",
+            "folder_separator_icon": " <transparent>\ue0b1</> "
+          },
+          "style": "powerline",
+          "powerline_symbol": "\ue0b0",
+          "template": " <b>{{ .Path }}</b> ",
+          "type": "path"
+        },
+        {
+          "background": "#306998",
+          "foreground": "#FFE873",
+          "powerline_symbol": "\ue0b0",
+          "style": "powerline",
+          "template": " \ue235 {{ if .Venv }}{{ .Venv }}{{ else }}{{ .Full }}{{ end }} ",
+          "type": "python"
+        },
+        {
+          "background": "green",
+          "foreground": "black",
+          "background_templates": [
+            "{{ if or (.Working.Changed) (.Staging.Changed) }}red{{ end }}",
+            "{{ if and (gt .Ahead 0) (gt .Behind 0) }}magenta{{ end }}",
+            "{{ if gt .Ahead 0 }}lightMagenta{{ end }}",
+            "{{ if gt .Behind 0 }}lightMagenta{{ end }}"
+          ],
+          "foreground_templates": [
+            "{{ if or (.Working.Changed) (.Staging.Changed) }}white{{ end }}"
+          ],
+          "options": {
+            "branch_template": "{{ trunc 25 .Branch }}",
+            "fetch_status": true,
+            "branch_icon": "\uf418 "
+          },
+          "style": "diamond",
+          "leading_diamond": "<transparent,background>\ue0b0</>",
+          "template": " <b>{{ .HEAD }}</b>{{if .BranchStatus }} {{ .BranchStatus }}{{ end }}{{ if .Working.Changed }} <transparent>\ue0b1</> \uf044 <b>{{ .Working.String }}</b>{{ end }}",
+          "trailing_diamond": "\ue0b0",
+          "type": "git"
+        }
+      ],
+      "type": "prompt"
+    },
+    {
+      "alignment": "right",
+      "segments": [
+        {
+          "background": "black",
+          "foreground": "white",
+          "options": {
+            "always_enabled": true
+          },
+          "invert_powerline": true,
+          "style": "powerline",
+          "powerline_symbol": "\ue0b2",
+          "template": " \ueba2 <b>{{ .FormattedMs }}</b> ",
+          "type": "executiontime"
+        },
+        {
+          "background": "blue",
+          "foreground": "black",
+          "invert_powerline": true,
+          "style": "diamond",
+          "template": " \uf073 <b>{{ .CurrentDate | date .Format }}</b> ",
+          "trailing_diamond": "\ue0b0",
+          "type": "time"
+        }
+      ],
+      "type": "prompt"
+    },
+    {
+      "alignment": "left",
+      "newline": true,
+      "segments": [
+        {
+          "foreground": "blue",
+          "style": "plain",
+          "template": "\u2570\u2500 {{ if .Root }}#{{else}}${{end}}",
+          "type": "text"
+        }
+      ],
+      "type": "prompt"
+    }
+  ],
+  "final_space": true,
+  "version": 4
+}
+

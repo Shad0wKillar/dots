@@ -1,0 +1,25 @@
+# You should put the path of the files here
+# Remember, all the paths automatically starts
+# from "~". 
+# So for ~/.zshrc , you only have to write .zshrc
+
+
+# --- Zsh ---
+.zshrc_custom
+.config/zshrc/custom/20-customization
+.config/zshrc/custom/25-aliases
+.config/zshrc/custom/30-autostart
+
+# --- Kitty ---
+.config/kitty/custom.conf
+
+# --- Hyprland Environment ---
+.config/hypr/conf/custom.conf
+.config/hypr/conf/keybindings/default.conf
+
+# --- Neovim (AstroNvim Additions) ---
+.config/nvim/lua/plugins/astroui.lua
+.config/nvim/lua/plugins/custom.lua
+
+# --- Oh My Posh ---
+.config/ohmyposh/quick-term.omp.json
