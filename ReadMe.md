@@ -17,6 +17,7 @@ To accurately replicate this environment, the following core software must be in
 * **ML4W Dotfiles**
 * **Kitty**
 * **Zsh**
+* **Oh-My-Zsh**
 * **Oh-My-Posh**
 * **Neovim** (configured with AstroNvim)
 
@@ -40,7 +41,34 @@ The script is built with strict safeguards to prevent data loss or system breaka
 * **Conflict Resolution:** If a file exists in both the system and the repository independently, the script prioritizes the repository version but safely backs up the local system file by appending `.bak` to it.
 * **Dead Link Pruning:** If the repository is moved to a new directory, running the script detects broken old links, removes them, and establishes fresh symlinks pointing to the new repository location.
 
-> **NOTE:** If you have files in AstroNvim, adding the `.bak` file can break it. For that, you have to manually go to `~/.config/nvim/` and delete all the `*.bak` files. Same is the case for `~/.zshrc/custom`. So whenever you get the errors, you have to remove the `*.bak` file to make it work.
+### Important Post-Install Notes
+
+**1. The `.bak` File Collision (AstroNvim & Zsh)**
+If you have files in AstroNvim, adding the `.bak` file can break it. For that, you have to manually go to `~/.config/nvim/` and delete all the `*.bak` files. Same is the case for `~/.zshrc/custom`. So whenever you get the errors, you have to remove the `*.bak` file to make it work.
+
+**2. Machine-Specific Configurations**
+There are some specific stuff like conda stuff and my mpv and some other extra stuff in `~/.zshrc_custom`. So you will most likely have to delete this stuff. Just delete/comment out the following lines:
+
+```bash
+alias mpv='prime-run mpv'
+
+. "$HOME/.local/bin/env"
+
+__conda_setup="$('/home/shad0wkillar/miniconda3/bin/conda' 'shell.zsh' 'hook' 2>/dev/null)"
+if [ $? -eq 0 ]; then
+  eval "$__conda_setup"
+else
+  if [ -f "/home/shad0wkillar/miniconda3/etc/profile.d/conda.sh" ]; then
+    . "/home/shad0wkillar/miniconda3/etc/profile.d/conda.sh"
+  else
+    export PATH="/home/shad0wkillar/miniconda3/bin:$PATH"
+  fi
+fi
+unset __conda_setup
+
+# opencode
+export PATH=/home/shad0wkillar/.opencode/bin:$PATH
+```
 
 ---
 
@@ -69,31 +97,6 @@ To see exactly what operations the script will perform without actually modifyin
 
 ## Monitored Files
 
-Below is the current structure of tracked custom files defined in `manifest.txt` (you can check the latest list in the `manifest.txt` file at the root of the repo):
+The exact list of tracked configurations is maintained dynamically by the sync engine. 
 
-```bash
-# You should put the path of the files here
-# Remember, all the paths automatically starts
-# from "~". 
-# So for ~/.zshrc , you only have to write .zshrc
-
-# --- Zsh ---
-.zshrc_custom
-.config/zshrc/custom/20-customization
-.config/zshrc/custom/25-aliases
-.config/zshrc/custom/30-autostart
-
-# --- Kitty ---
-.config/kitty/custom.conf
-
-# --- Hyprland Environment ---
-.config/hypr/conf/custom.conf
-.config/hypr/conf/keybindings/default.conf
-
-# --- Neovim (AstroNvim Additions) ---
-.config/nvim/lua/plugins/astroui.lua
-.config/nvim/lua/plugins/custom.lua
-
-# --- Oh My Posh ---
-.config/ohmyposh/quick-term.omp.json
-```
+**[View the current manifest.txt](./manifest.txt)** to see all actively tracked configs for Zsh, Kitty, Hyprland, Neovim, and others.
