@@ -6,6 +6,12 @@ The tracking and deployment of these files are handled by a custom **Manifest-Dr
 
 ---
 
+## Screenshots
+<img src="assets/ss_1.jpg" alt="Screenshot 1" width="50%">
+<img src="assets/ss_2.jpg" alt="Screenshot 2" width="50%">
+<img src="assets/ss_3.jpg" alt="Screenshot 3" width="50%">
+<img src="assets/ss_4.jpg" alt="Screenshot 4" width="50%">
+
 ## Hardware & Software Stack
 
 These configurations were built and tested on a Dell Latitude 5490 (LightBox) with an i5 8th gen processor and an Nvidia MX130. 
