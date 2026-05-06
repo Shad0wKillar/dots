@@ -14,12 +14,18 @@ These configurations were built and tested on a Dell Latitude 5490 (LightBox) wi
 To accurately replicate this environment, the following core software must be installed on your Arch system:
 * **Arch Linux**
 * **Hyprland**
-* **ML4W Dotfiles**
+* **ML4W Dotfiles (Using the AstroNvim)**
 * **Kitty**
 * **Zsh**
 * **Oh-My-Zsh**
 * **Oh-My-Posh**
 * **Neovim** (configured with AstroNvim)
+* **Yazi** (you need plugins*)
+* **Matugen** 
+
+
+>*Required Plugins for Yazi:
+>1. ya pkg add yazi-rs/plugins:git
 
 ---
 
@@ -100,3 +106,4 @@ To see exactly what operations the script will perform without actually modifyin
 The exact list of tracked configurations is maintained dynamically by the sync engine. 
 
 **[View the current manifest.txt](./manifest.txt)** to see all actively tracked configs for Zsh, Kitty, Hyprland, Neovim, and others.
+

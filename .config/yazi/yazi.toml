@@ -1,0 +1,29 @@
+[opener]
+gimp = [
+    { run = 'gimp %s', orphan = true, desc = "GIMP", for = "linux" }
+]
+zen = [
+    { run = 'zen-browser %s', orphan = true, desc = "Zen Browser", for = "linux" }
+]
+
+[open]
+prepend_rules = [
+    { mime = "image/*", use = "gimp" },
+    { url = "*.{png,jpg,jpeg,webp}", use = "gimp" },
+    
+    { mime = "application/pdf", use = "zen" },
+    { mime = "text/html", use = "zen" },
+    { url = "*.{pdf,html,htm}", use = "zen" }
+]
+
+[[plugin.prepend_fetchers]]
+id    = "git"
+url   = "*"
+run   = "git"
+group = "git"
+
+[[plugin.prepend_fetchers]]
+id    = "git"
+url   = "*/"
+run   = "git"
+group = "git"

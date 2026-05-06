@@ -23,3 +23,8 @@
 
 # --- Oh My Posh ---
 .config/ohmyposh/quick-term.omp.json
+
+# --- Yazi ---
+.config/yazi/init.lua
+.config/yazi/lua/git-ui.lua
+.config/yazi/yazi.toml
