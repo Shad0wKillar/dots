@@ -7,10 +7,10 @@ The tracking and deployment of these files are handled by a custom **Manifest-Dr
 ---
 
 ## Screenshots
-<img src="assets/ss_1.jpg" alt="Screenshot 1" width="50%">
-<img src="assets/ss_2.jpg" alt="Screenshot 2" width="50%">
-<img src="assets/ss_3.jpg" alt="Screenshot 3" width="50%">
-<img src="assets/ss_4.jpg" alt="Screenshot 4" width="50%">
+<img src="assets/ss_1.jpg" alt="Screenshot 1" width="100%">
+<img src="assets/ss_2.jpg" alt="Screenshot 2" width="100%">
+<img src="assets/ss_3.jpg" alt="Screenshot 3" width="100%">
+<img src="assets/ss_4.jpg" alt="Screenshot 4" width="100%">
 
 ## Hardware & Software Stack
 
