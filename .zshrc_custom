@@ -5,17 +5,26 @@ alias mpv='prime-run mpv'
 
 . "$HOME/.local/bin/env"
 
-__conda_setup="$('/home/shad0wkillar/miniconda3/bin/conda' 'shell.zsh' 'hook' 2>/dev/null)"
-if [ $? -eq 0 ]; then
-  eval "$__conda_setup"
-else
-  if [ -f "/home/shad0wkillar/miniconda3/etc/profile.d/conda.sh" ]; then
-    . "/home/shad0wkillar/miniconda3/etc/profile.d/conda.sh"
+# I deferred Conda initialization
+conda_setup() {
+  __conda_setup="$('/home/shad0wkillar/miniconda3/bin/conda' 'shell.zsh' 'hook' 2>/dev/null)"
+  if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
   else
-    export PATH="/home/shad0wkillar/miniconda3/bin:$PATH"
+    if [ -f "/home/shad0wkillar/miniconda3/etc/profile.d/conda.sh" ]; then
+      . "/home/shad0wkillar/miniconda3/etc/profile.d/conda.sh"
+    else
+      export PATH="/home/shad0wkillar/miniconda3/bin:$PATH"
+    fi
   fi
-fi
-unset __conda_setup
+  unset __conda_setup
+}
+
+conda() {
+  unset -f conda
+  conda_setup
+  conda "$@"
+}
 
 # opencode
 export PATH=/home/shad0wkillar/.opencode/bin:$PATH
