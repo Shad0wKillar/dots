@@ -1,0 +1,13 @@
+[Unit]
+Description=ML4W wallpaper daemon with crash recovery
+PartOf=graphical-session.target
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
+[Service]
+Type=exec
+ExecStart=/usr/bin/awww-daemon --no-cache
+ExecStartPost=/usr/bin/systemctl --user --no-block start ml4w-wallpaper-restore.service
+Restart=on-failure
+RestartSec=2
+

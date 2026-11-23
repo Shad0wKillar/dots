@@ -1,0 +1,18 @@
+--- upstream
++++ personal
+@@ -18,5 +18,5 @@
+ 
+     -- awww daemon
+-    hl.exec_cmd("awww-daemon")
++    hl.exec_cmd("bash ~/.config/ml4w/scripts/ml4w-start-wallpaper-daemon")
+ 
+     -- Load cursor
+@@ -43,6 +43,6 @@
+     hl.exec_cmd("~/.config/hypr/scripts/gtk.sh")
+ 
+-    -- Start swaync
+-    hl.exec_cmd("swaync")
++    -- Use the same service as D-Bus activation, avoiding a second instance.
++    hl.exec_cmd("systemctl --user start swaync.service")
+ 
+     -- Start hypridle

@@ -1,30 +1,63 @@
-# You should put the path of the files here
-# Remember, all the paths automatically starts
-# from "~". 
-# So for ~/.zshrc , you only have to write .zshrc
+# Paths relative to HOME. Mixed upstream files use patches/.
 
-
-# --- Zsh ---
+# Shell and terminal
 .zshrc_custom
 .config/zshrc/custom/20-customization
-.config/zshrc/custom/25-aliases
-.config/zshrc/custom/30-autostart
-
-# --- Kitty ---
 .config/kitty/custom.conf
-
-# --- Hyprland Environment ---
-.config/hypr/conf/custom.conf
-.config/hypr/conf/keybindings/default.conf
-
-# --- Neovim (AstroNvim Additions) ---
-.config/nvim/lua/plugins/astroui.lua
-.config/nvim/lua/plugins/custom.lua
-
-# --- Oh My Posh ---
 .config/ohmyposh/quick-term.omp.json
 
-# --- Yazi ---
-.config/yazi/init.lua
-.config/yazi/lua/git-ui.lua
-.config/yazi/yazi.toml
+# Hyprland
+.config/hypr/custom.lua
+.config/hypr/monitors.lua
+.config/hypr/conf/animation.lua
+.config/hypr/conf/autostart.lua
+.config/hypr/conf/keybindings/default.lua
+.config/hypr/custom/display_profile.lua
+.config/hypr/custom/dual_monitors.lua
+.config/hypr/custom/restore-wallpaper.sh
+.config/hypr/custom/workspaces.lua
+
+# ML4W
+.config/ml4w-dotfiles-installer/com.ml4w.dotfiles/blacklist
+.config/ml4w-statusbar/statusbar.json
+.config/ml4w/scripts/ml4w-autostart
+.config/ml4w/scripts/ml4w-start-wallpaper-daemon
+.config/ml4w/scripts/ml4w-wallpaper
+.config/ml4w/settings/browser.sh
+.config/ml4w/settings/dock.json
+.config/ml4w/settings/hide-fastfetch
+.config/ml4w/settings/statusbar
+.config/ml4w/settings/wallpaper-folder
+.config/ml4w/settings/wallpaper-transition-effect
+.config/ml4w/settings/waybar_appmenu.sh
+.config/ml4w/settings/waybar_window.sh
+
+# Waybar
+.config/waybar/modules.json
+.config/waybar/themes/ml4w-glass-center/config-custom
+.config/waybar/themes/ml4w-glass-center/default/style.css
+
+# AstroNvim
+.config/nvim/lua/community.lua
+.config/nvim/lua/polish.lua
+.config/nvim/lua/plugins/astroui.lua
+.config/nvim/lua/plugins/custom.lua
+.config/nvim/lua/plugins/keymaps.lua
+.config/nvim/lua/plugins/node-path.lua
+.config/nvim/lua/plugins/options.lua
+
+# User services
+.config/systemd/user/ksecretd.service
+.config/systemd/user/kwallet-pam-unlock.service
+.config/systemd/user/ml4w-awww.service
+.config/systemd/user/ml4w-wallpaper-restore.service
+.config/systemd/user/temporary-keep-awake.service
+
+# Desktop and applications
+.config/fontconfig/conf.d/55-readable-fallbacks.conf
+.config/gtk-3.0/settings.ini
+.config/gtk-4.0/settings.ini
+.config/xsettingsd/xsettingsd.conf
+.config/mpv/mpv.conf
+.config/zed/settings.json
+.local/share/applications/zen-browser.desktop

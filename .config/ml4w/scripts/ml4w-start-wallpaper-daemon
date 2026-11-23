@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+# Serialize startup requests from login, monitor changes and the picker.
+exec 9>"${XDG_RUNTIME_DIR:?}/ml4w-wallpaper-daemon.lock"
+flock -w 5 9 || exit 1
+
+# A manually started or legacy daemon can still own the socket during migration.
+# Do not launch a competing instance; normal logins use only the service.
+if ! systemctl --user is-active --quiet ml4w-awww.service &&
+   pgrep -u "$UID" -x awww-daemon >/dev/null; then
+    echo "awww-daemon is already running outside ml4w-awww.service" >&2
+    exit 0
+fi
+
+# Give the supervised daemon and its restore job this compositor's environment.
+systemctl --user import-environment WAYLAND_DISPLAY HYPRLAND_INSTANCE_SIGNATURE XDG_RUNTIME_DIR || exit 1
+systemctl --user start ml4w-awww.service

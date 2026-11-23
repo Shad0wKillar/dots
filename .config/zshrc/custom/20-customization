@@ -16,7 +16,6 @@ plugins=(
     sudo
     web-search
     archlinux
-    virtualenv
     zsh-autosuggestions
     zsh-syntax-highlighting
     fast-syntax-highlighting

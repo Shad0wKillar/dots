@@ -1,0 +1,13 @@
+--- upstream
++++ personal
+@@ -4,3 +4,8 @@
+ @import '../../../../../.config/waybar/colors.css';
+ 
+-@import '../../ml4w-glass/style.css';
+\ No newline at end of file
++@import '../../ml4w-glass/style.css';
++
++/* Fit the workspace pill to the buttons that are currently visible. */
++#workspaces {
++    min-width: 0;
++}

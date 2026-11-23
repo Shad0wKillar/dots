@@ -1,0 +1,23 @@
+--- upstream
++++ personal
+@@ -7,4 +7,5 @@
+ //
+ {
++  "include": ["~/.config/waybar/workspace-profile.json"],
+   // Workspaces
+   "hyprland/workspaces": {
+@@ -19,7 +20,4 @@
+       "active": "",
+       "default": ""
+-    },
+-    "persistent-workspaces": {
+-      "*": 5
+     }
+   },
+@@ -223,5 +221,5 @@
+   // Clock
+   "clock": {
+-    "format": "{:%H:%M %a}",
++    "format": "{:%I:%M %p %a}",
+     "on-click": "qs ipc call calendar toggle",
+     "timezone": "",

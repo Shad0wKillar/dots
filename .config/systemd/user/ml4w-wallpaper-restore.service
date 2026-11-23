@@ -1,0 +1,8 @@
+[Unit]
+Description=Restore the selected wallpaper after the daemon starts
+PartOf=graphical-session.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/bash %h/.config/hypr/custom/restore-wallpaper.sh
+TimeoutStartSec=180

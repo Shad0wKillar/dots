@@ -1,0 +1,7 @@
+[Unit]
+Description=Prevent sleep until manually stopped or the machine restarts
+
+[Service]
+Type=exec
+ExecStart=/usr/bin/systemd-inhibit --what=idle:sleep --mode=block --who="Temporary keep awake" --why="User manually enabled keep awake" /usr/bin/sleep infinity
+Restart=no

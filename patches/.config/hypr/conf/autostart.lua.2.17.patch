@@ -1,0 +1,16 @@
+--- upstream
++++ personal
+@@ -18,5 +18,5 @@
+ 
+     -- awww daemon
+-    hl.exec_cmd("awww-daemon")
++    hl.exec_cmd("bash ~/.config/ml4w/scripts/ml4w-start-wallpaper-daemon")
+ 
+     -- Load cursor
+@@ -57,5 +57,5 @@
+     -- (marker written by post-ubuntu.sh), since an explicit exec-once
+     -- there raced with it and lost with "already running!".
+-    hl.exec_cmd("[ -f ~/.config/ml4w/.swaync-dbus-activated ] || swaync")
++    hl.exec_cmd("systemctl --user start swaync.service")
+ 
+     -- Start hypridle

@@ -1,0 +1,2 @@
+# Preserve personal Hyprland settings, including KWallet login initialization.
+.config/hypr/custom.lua

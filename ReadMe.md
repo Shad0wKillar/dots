@@ -16,100 +16,24 @@ The tracking and deployment of these files are handled by a custom **Manifest-Dr
 
 These configurations were built and tested on a Dell Latitude 5490 (LightBox) with an i5 8th gen processor and an Nvidia MX130. 
 
-### Prerequisites
-To accurately replicate this environment, the following core software must be installed on your Arch system:
-* **Arch Linux**
-* **Hyprland**
-* **ML4W Dotfiles (Using the AstroNvim)**
-* **Kitty**
-* **Zsh**
-* **Oh-My-Zsh**
-* **Oh-My-Posh**
-* **Neovim** (configured with AstroNvim)
-* **Yazi** (you need plugins*)
-* **Matugen** 
+### Restore the configuration
 
+Install ML4W's Lua-based Hyprland configuration and the AstroNvim v6 template first. Clone this repository, then run the following from the checkout.
 
->*Required Plugins for Yazi:
->1. ya pkg add yazi-rs/plugins:git
-
----
-
-## The Manifest System
-
-Because ML4W heavily utilizes symlinks pointing to its own deployment directories (`~/.mydotfiles`), using a blanket directory-mirroring tool like GNU Stow is dangerous and will cause immediate file collisions. To solve this, this repository uses a surgical, file-by-file tracking system.
-
-### How It Works
-The core of the system is the `sync.sh` bash script and the `manifest.txt` file.
-
-1. **`manifest.txt`**: A flat text list of all custom files tracked by this repository. All paths are written relative to the home directory (`~`).
-2. **`sync.sh`**: The engine that parses the manifest, dynamically determines its own location (allowing the repo to be cloned anywhere), and synchronizes the local system with the repository.
-
-### Edge Cases and Safety Mechanisms
-The script is built with strict safeguards to prevent data loss or system breakage:
-
-* **ML4W Collision Avoidance:** Before touching any file, the script checks if it is a symlink pointing to `.mydotfiles`. If it is, the file is strictly ignored. This guarantees custom configurations never override ML4W's base files.
-* **Automated Ingestion:** If a file exists as a standard file on the system but not in the repository (e.g., a newly created AstroNvim plugin), the script automatically creates the necessary directory structure in the repo, moves the file into it, and replaces the local file with a symlink.
-* **Conflict Resolution:** If a file exists in both the system and the repository independently, the script prioritizes the repository version but safely backs up the local system file by appending `.bak` to it.
-* **Dead Link Pruning:** If the repository is moved to a new directory, running the script detects broken old links, removes them, and establishes fresh symlinks pointing to the new repository location.
-
-### Important Post-Install Notes
-
-**1. The `.bak` File Collision (AstroNvim & Zsh)**
-If you have files in AstroNvim, adding the `.bak` file can break it. For that, you have to manually go to `~/.config/nvim/` and delete all the `*.bak` files. Same is the case for `~/.zshrc/custom`. So whenever you get the errors, you have to remove the `*.bak` file to make it work.
-
-**2. Machine-Specific Configurations**
-There are some specific stuff like conda stuff and my mpv and some other extra stuff in `~/.zshrc_custom`. So you will most likely have to delete this stuff. Just delete/comment out the following lines:
-
-```bash
-alias mpv='prime-run mpv'
-
-. "$HOME/.local/bin/env"
-
-__conda_setup="$('/home/shad0wkillar/miniconda3/bin/conda' 'shell.zsh' 'hook' 2>/dev/null)"
-if [ $? -eq 0 ]; then
-  eval "$__conda_setup"
-else
-  if [ -f "/home/shad0wkillar/miniconda3/etc/profile.d/conda.sh" ]; then
-    . "/home/shad0wkillar/miniconda3/etc/profile.d/conda.sh"
-  else
-    export PATH="/home/shad0wkillar/miniconda3/bin:$PATH"
-  fi
-fi
-unset __conda_setup
-
-# opencode
-export PATH=/home/shad0wkillar/.opencode/bin:$PATH
+```sh
+./sync.sh --dry-run
+./sync.sh
 ```
 
----
+The [manifest](manifest.txt) lists the active paths relative to your home directory. Older Hyprland, Zsh and Yazi files outside the manifest are retained for review. Sync leaves them alone.
 
-## Usage
+Most entries link directly to this checkout. For six files that mix ML4W code with personal edits, the [patches](patches) directory holds just the differences. Sync checks the installed file, applies a matching patch to a private copy and links that copy into place. On an incompatible base it reports the path during preflight. After an ML4W update, rerun the dry run and sync to restore any replaced links.
 
-### Installation
-1. Clone this repository anywhere on your system.
-2. Make the script executable: 
-   ```bash
-   chmod +x sync.sh
-   ```
-3. Run the script: 
-   ```bash
-   ./sync.sh
-   ```
+Edit personal files through their links as usual. For a patched file, keep permanent edits in its patch. The linked merged copy lives under `$XDG_STATE_HOME/dots` (normally `~/.local/state/dots`). Keep this directory and the checkout while using the links. Each sync that replaces a file prints the backup directory containing the originals under their home-relative paths. Selecting Waybar also archives ML4W’s empty `waybar-disabled` marker if present.
 
-### Dry Run Mode
-To see exactly what operations the script will perform without actually modifying, moving, or deleting any files, run the script with the dry-run flag:
-```bash
-./sync.sh --dry-run 
-# or 
-./sync.sh -n
-```
+### Machine-specific dependencies
 
----
-
-## Monitored Files
-
-The exact list of tracked configurations is maintained dynamically by the sync engine. 
-
-**[View the current manifest.txt](./manifest.txt)** to see all actively tracked configs for Zsh, Kitty, Hyprland, Neovim, and others.
-
+- The display profile recognizes the Dell P2419H by its description. The laptop display uses 1.2 scaling.
+- The Hyprland bindings reference T3 Code and the local Kotodama checkout, including its Python virtual environment. The Zen launcher expects the browser under `~/.local/opt/zen-browser`. The wallpaper folder setting points to `~/Pictures/wallpaper/ml4w_wallpapers`.
+- The Zsh prompt uses Oh My Posh and the ML4W Zsh override in `~/.config/zshrc/custom/20-customization`. The Neovim language packs are selected in `~/.config/nvim/lua/community.lua`.
+- Sync installs user unit files. The wallpaper helper starts its service on demand. KWallet login unlock also depends on the machine’s PAM configuration. Unit enablement and system-wide configuration are managed separately.

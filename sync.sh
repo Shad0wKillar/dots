@@ -1,90 +1,119 @@
 #!/usr/bin/env bash
+set -eu
 
-DOTS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-MANIFEST="$DOTS_DIR/manifest.txt"
+repo=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)
+state="${XDG_STATE_HOME:-$HOME/.local/state}/dots"
+dry_run=0
+case "${1:-}" in
+  -n|--dry-run) dry_run=1 ;;
+  "") ;;
+  *) echo "Usage: $0 [--dry-run]" >&2; exit 2 ;;
+esac
 
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-NC='\033[0m'
-
-DRY_RUN=0
-if [[ "$1" == "-n" || "$1" == "--dry-run" ]]; then
-  DRY_RUN=1
-  echo -e "${YELLOW}[DRY RUN] Simulating operations. No files will be modified.${NC}"
-  echo "-----------------------------------"
+# Preflight every destination before installing the first link.
+if (( ! dry_run )); then
+  "$repo/sync.sh" --dry-run >/dev/null
 fi
 
-if [[ ! -f "$MANIFEST" ]]; then
-  echo -e "${RED}Error: manifest.txt not found in $DOTS_DIR${NC}"
-  exit 1
-fi
+run_dir=
+prepare_run() {
+  if [[ -z "$run_dir" ]]; then
+    mkdir -p -- "$state"
+    run_dir=$(mktemp -d "$state/sync-XXXXXXXX")
+    echo "[BACKUPS] $run_dir/originals"
+  fi
+}
 
-echo -e "${BLUE}Syncing dotfiles from $DOTS_DIR...${NC}"
-echo "-----------------------------------"
+# Keep backups outside paths that Neovim, Zsh and systemd discover on startup.
+backup() {
+  prepare_run
+  mkdir -p -- "$run_dir/originals/$(dirname "$1")"
+  cp -a -- "$HOME/$1" "$run_dir/originals/$1"
+}
 
-while IFS= read -r line || [[ -n "$line" ]]; do
-  line=$(echo "$line" | xargs)
-
-  # I skip empty lines and comments
-  if [[ -z "$line" ]] || [[ "$line" == \#* ]]; then
+while IFS= read -r path || [[ -n "$path" ]]; do
+  [[ -z "$path" || "$path" == \#* ]] && continue
+  target="$HOME/$path"
+  source="$repo/$path"
+  if [[ -d "$target" || ( -e "$target" && ! -f "$target" ) ]]; then
+    echo "[ERROR] Expected a regular file at $target" >&2
+    exit 1
+  fi
+  if [[ -L "$target" && "$(readlink -- "$target")" == *".mydotfiles/"* ]]; then
+    echo "[SKIP] ML4W manages the link at $path"
     continue
   fi
 
-  TARGET="$HOME/$line"
-  REPO_FILE="$DOTS_DIR/$line"
-
-  echo -e "Processing: ${YELLOW}$line${NC}"
-
-  if [[ -L "$TARGET" ]]; then
-    LINK_DEST=$(readlink "$TARGET")
-
-    if [[ "$LINK_DEST" == *".mydotfiles"* ]]; then
-      echo -e "  ${BLUE}[SKIP]${NC} Managed by ML4W. Ignoring."
+  if [[ -f "$repo/patches/$path.patch" ]]; then
+    # Accept a clean upstream file or a file that already has all our edits.
+    # Alternative patches cover incompatible upstream revisions.
+    input=$(realpath -m -- "$target")
+    applied=0
+    matched=0
+    for delta in "$repo/patches/$path.patch" "$repo/patches/$path".*.patch; do
+      [[ -f "$delta" && -f "$target" ]] || continue
+      if patch -s -f -R -F0 --dry-run "$input" -i "$delta" >/dev/null; then
+        matched=1
+        applied=1
+        break
+      elif patch -s -f -F0 --dry-run "$input" -i "$delta" >/dev/null; then
+        matched=1
+        break
+      fi
+    done
+    if (( ! matched )); then
+      echo "[ERROR] $path needs a compatible ML4W base or a rebased patch." >&2
+      exit 1
+    fi
+    if (( applied )) && [[ -L "$target" && "$(realpath -- "$target")" == "$state"/sync-*/merged/"$path" ]]; then
+      echo "[OK] $path"
       continue
     fi
-
-    if [[ "$LINK_DEST" != "$REPO_FILE" ]]; then
-      echo -e "  ${YELLOW}[CLEANUP]${NC} Removing invalid symlink."
-      if [[ $DRY_RUN -eq 0 ]]; then rm "$TARGET"; fi
+    echo "[OVERLAY] $path"
+    (( dry_run )) && continue
+    prepare_run
+    source="$run_dir/merged/$path"
+    mkdir -p -- "$(dirname "$source")"
+    if (( applied )); then
+      cp -p -- "$target" "$source"
     else
-      echo -e "  ${GREEN}[OK]${NC} Already linked."
-      continue
+      patch -s -f -F0 -o "$source" "$input" -i "$delta"
+      chmod --reference="$target" "$source"
     fi
+  elif [[ -f "$source" && "$target" -ef "$source" ]]; then
+    echo "[OK] $path"
+    continue
+  elif [[ ! -e "$source" && -f "$target" && ! -L "$target" ]]; then
+    echo "[INGEST] $path"
+    if (( ! dry_run )); then
+      mkdir -p -- "$(dirname "$source")"
+      cp -p -- "$target" "$source"
+    fi
+  elif [[ ! -f "$source" ]]; then
+    echo "[ERROR] Missing source for $path" >&2
+    exit 1
   fi
 
-  if [[ -f "$TARGET" && ! -L "$TARGET" ]]; then
-    if [[ -f "$REPO_FILE" ]]; then
-      echo -e "  ${YELLOW}[WARN]${NC} Conflict! System and Repo files exist. Backing up system file."
-      if [[ $DRY_RUN -eq 0 ]]; then mv "$TARGET" "${TARGET}.bak"; fi
-    else
-      echo -e "  ${GREEN}[INGEST]${NC} Moving file to repository."
-      if [[ $DRY_RUN -eq 0 ]]; then
-        mkdir -p "$(dirname "$REPO_FILE")"
-        mv "$TARGET" "$REPO_FILE"
-      fi
-    fi
+  echo "[LINK] $path"
+  (( dry_run )) && continue
+  mkdir -p -- "$(dirname "$target")"
+  if [[ -L "$target" || -e "$target" ]]; then
+    backup "$path"
   fi
+  ln -sfnT -- "$source" "$target"
+done < "$repo/manifest.txt"
 
-  # If it exists in repo, or we are dry-running an ingestion
-  if [[ -f "$REPO_FILE" || ($DRY_RUN -eq 1 && -f "$TARGET" && ! -L "$TARGET") ]]; then
-    if [[ ! -L "$TARGET" ]]; then
-      echo -e "  ${GREEN}[LINK]${NC} Creating symlink."
-      if [[ $DRY_RUN -eq 0 ]]; then
-        mkdir -p "$(dirname "$TARGET")"
-        ln -s "$REPO_FILE" "$TARGET"
-      fi
-    fi
-  else
-    echo -e "  ${RED}[ERROR]${NC} File not found locally or in repo."
+# ML4W uses the presence of an empty marker to disable Waybar.
+marker=.config/ml4w/settings/waybar-disabled
+if [[ "$(cat "$repo/.config/ml4w/settings/statusbar")" == waybar && ( -e "$HOME/$marker" || -L "$HOME/$marker" ) ]]; then
+  if [[ ! -f "$HOME/$marker" || -s "$HOME/$marker" || -L "$HOME/$marker" ]]; then
+    echo "[ERROR] Unexpected Waybar marker at $HOME/$marker" >&2
+    exit 1
   fi
-
-done <"$MANIFEST"
-
-echo "-----------------------------------"
-if [[ $DRY_RUN -eq 1 ]]; then
-  echo -e "${YELLOW}Dry run complete!${NC}"
-else
-  echo -e "${GREEN}Sync complete!${NC}"
+  echo "[ARCHIVE] $marker"
+  if (( ! dry_run )); then
+    prepare_run
+    mkdir -p "$run_dir/originals/$(dirname "$marker")"
+    mv -T -- "$HOME/$marker" "$run_dir/originals/$marker"
+  fi
 fi

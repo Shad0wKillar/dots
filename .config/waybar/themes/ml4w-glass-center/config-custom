@@ -1,0 +1,11 @@
+{
+    "clock": {
+        "format": "{:%I:%M %p | %a - %d %b}",
+        "on-click": "qs ipc call calendar toggle",
+        "timezone": "",
+        "tooltip": false
+    },
+    "include": [
+        "~/.config/waybar/themes/ml4w-glass-center/config"
+    ]
+}

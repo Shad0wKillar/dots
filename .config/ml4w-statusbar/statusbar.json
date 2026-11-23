@@ -1,0 +1,11 @@
+{
+    "bar": {
+        "enabled": false,
+        "alwaysExpanded": true,
+        "autohide": false
+    },
+    "clock": {
+        "format": "hh:mm AP",
+        "dateFormat": "ddd, dd MMM"
+    }
+}

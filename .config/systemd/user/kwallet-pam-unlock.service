@@ -1,0 +1,14 @@
+[Unit]
+Description=Unlock KWallet using the password PAM captured at login (Hyprland has no graphical-session.target, so the vendor plasma-kwallet-pam.service never fires)
+After=ksecretd.service
+Wants=ksecretd.service
+
+[Service]
+ExecStart=/usr/lib/pam_kwallet_init
+Type=simple
+Restart=on-failure
+RestartSec=2
+StartLimitIntervalSec=0
+
+[Install]
+WantedBy=default.target
