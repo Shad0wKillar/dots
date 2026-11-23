@@ -7,8 +7,7 @@
 -AWWW_CACHE_FOLDER="${XDG_CACHE_HOME:-"$HOME/.cache"}/awww/$AWWW_DAEMON_VERSION"
  
  # Colors for UI
-@@ -79,14 +77,8 @@
- fi
+@@ -80,13 +78,7 @@
  
 -# Apply wallpaper theming on every start — qs is guaranteed ready for IPC calls.
 -# Theming (matugen colors, quickshell reload) must always run.

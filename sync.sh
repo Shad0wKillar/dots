@@ -5,9 +5,18 @@ repo=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)
 state="${XDG_STATE_HOME:-$HOME/.local/state}/dots"
 dry_run=0
 case "${1:-}" in
+  --install-deps)
+    # Arch packages for the Fontconfig rules and Hyprland wallet integration.
+    packages=(fontconfig noto-fonts noto-fonts-cjk noto-fonts-emoji pam kwallet kwallet-pam)
+    if pacman -Q "${packages[@]}" >/dev/null 2>&1; then
+      echo "Font and KWallet packages are installed."
+      exit 0
+    fi
+    exec sudo pacman -S --needed "${packages[@]}"
+    ;;
   -n|--dry-run) dry_run=1 ;;
   "") ;;
-  *) echo "Usage: $0 [--dry-run]" >&2; exit 2 ;;
+  *) echo "Usage: $0 [--dry-run | --install-deps]" >&2; exit 2 ;;
 esac
 
 # Preflight every destination before installing the first link.

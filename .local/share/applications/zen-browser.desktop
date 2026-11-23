@@ -1,9 +1,0 @@
-[Desktop Entry]
-Name=Zen Browser
-Comment=A privacy-focused web browser
-Exec=/home/shad0wkillar/.local/bin/zen
-Icon=/home/shad0wkillar/.local/opt/zen-browser/browser/chrome/icons/default/default128.png
-Terminal=false
-Type=Application
-Categories=Network;WebBrowser;
-StartupWMClass=zen;

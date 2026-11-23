@@ -23,7 +23,6 @@
 .config/ml4w/scripts/ml4w-autostart
 .config/ml4w/scripts/ml4w-start-wallpaper-daemon
 .config/ml4w/scripts/ml4w-wallpaper
-.config/ml4w/settings/browser.sh
 .config/ml4w/settings/dock.json
 .config/ml4w/settings/hide-fastfetch
 .config/ml4w/settings/statusbar
@@ -58,6 +57,3 @@
 .config/gtk-3.0/settings.ini
 .config/gtk-4.0/settings.ini
 .config/xsettingsd/xsettingsd.conf
-.config/mpv/mpv.conf
-.config/zed/settings.json
-.local/share/applications/zen-browser.desktop
